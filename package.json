@@ -1,0 +1,62 @@
+{
+  "name": "mtaw",
+  "version": "1.0.0",
+  "description": "Character Sheet for Mage the Awakening",
+  "scripts": {
+    "build": "rm -rf docs && parcel build --dist-dir docs",
+    "watch": "parcel serve --dist-dir .parcel-server source/index.html",
+    "check": "npx @biomejs/biome check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winstromming/mtaw.git"
+  },
+  "licence": "CC-BY-1.0",
+  "bugs": {
+    "url": "https://github.com/winstromming/mtaw/issues"
+  },
+  "homepage": "https://github.com/winstromming/mtaw#readme",
+  "dependencies": {
+    "@babel/core": "^7.28.5",
+    "@parcel/transformer-vue": "^2.16.1",
+    "@types/pdfmake": "^0.2.12",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/tsconfig": "^0.8.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-vue": "^10.5.1",
+    "lodash": "^4.17.21",
+    "lucide-vue-next": "^0.553.0",
+    "naive-ui": "2.43.1",
+    "parcel": "^2.16.1",
+    "pdfjs-dist": "^5.4.394",
+    "pdfmake": "^0.2.20",
+    "prettier": "^3.6.2",
+    "vue": "^3.5.24"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": false,
+    "printWidth": 300,
+    "singleAttributePerLine": false,
+    "embeddedLanguageFormatting": "off"
+  },
+  "targets": {
+    "default": {
+      "publicUrl": ".",
+      "includeNodeModules": true
+    }
+  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead"
+  ],
+  "source": "source/index.html",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.8",
+    "buffer": "^6.0.3",
+    "process": "^0.11.10"
+  }
+}
