@@ -150,12 +150,8 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
 };
 
 export const getCastingReachLimit = (caster: Caster, casting: Casting) => {
-  if (
-    casting.spells.length === 0 &&
-    casting.spells[0] &&
-    (casting.form === "Rote" || casting.form === "Grimoire")
-  ) {
-    return 5 - casting.spells[0].primaryArcana.level;
+  if (casting.spells[0] && (casting.form === "Rote" || casting.form === "Grimoire")) {
+    return 5 - (casting.spells[0].primaryArcana.level - 1);
   }
   const reaches: number[] = [];
   for (const spell of casting.spells) {
@@ -489,7 +485,7 @@ export const getCastingEffectsSummary = (caster: Caster, casting: Casting) => {
   // if (spell.spendWillpower) summary.unshift("Willpower spent.")
   for (let sp of casting.spells) {
     if (sp.page !== 'Creative') {
-      let src =  spells.find((n) => n.name === sp.name)
+      let src = spells.find((n) => n.name === sp.name)
       if (src?.factor && src.factor !== sp.factor) summary.push("Change primary factor.")
     }
   }
