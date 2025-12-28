@@ -53,7 +53,7 @@
           </n-space>
         </n-tooltip>
         <n-flex style="margin-left: auto; gap: 5px" :wrap="false">
-          <n-select class="choose-text" style="opacity: 0.5; min-width: 50px" :consistent-menu-width="false" v-model:value="spell.skill" placeholder="Skill" :options="skills" />
+          <n-select class="choose-text" :color="caster.details.order?.skills.includes(spell.skill) ? true : false" style="opacity: 0.6; min-width: 50px" :consistent-menu-width="false" v-model:value="spell.skill" placeholder="Skill" :options="skills" />
           <n-button text size="tiny" title="Remove" type="error" @click="() => caster.rotes.splice(index, 1)">
             <template #icon>
               <n-icon>
@@ -106,6 +106,7 @@ import Choose from '../common/Choose.vue';
 import { dots, ensureTrailingPeriod } from '../../functions/methods';
 import { casting } from '../../store/casting';
 import { computed } from 'vue';
+import type { Skill } from '../../config/types';
 
 const skills = computed(() => {
   const options = [];
@@ -114,7 +115,11 @@ const skills = computed(() => {
     ...caster.skills.mental,
     ...caster.skills.social,
   })) {
-    options.push({ label: `${k} (+${v.dots ?? 0})`, value: k });
+    if (caster.details.order?.skills.includes(k as Skill)) {
+      options.push({ label: `${k} (+${(v.dots ?? 0) + 1})`, value: k });
+    } else {
+      options.push({ label: `${k} (+${v.dots ?? 0})`, value: k });
+    }
   }
   return options;
 });
