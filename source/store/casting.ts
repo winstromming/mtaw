@@ -7,7 +7,6 @@ import type {
   Source,
   Yantra
 } from "../config/types";
-import { practices, purviews } from "../config/values";
 
 export type Casting = typeof casting;
 
@@ -59,16 +58,6 @@ export const casting = reactive({
   },
   insert(item?: Source, form?: Form) {
     if (item) this.spells.push({ ...item, effects: [] });
-    if (item === undefined) {
-      this.spells.push({
-        name: practices[0]?.verb!,
-        practice: practices[0]?.name!,
-        primaryArcana: { arcana: "Prime", level: practices[0]?.level! },
-        factor: "Potency",
-        description: practices[0]?.desc.replace("phenomena", purviews["Prime"])!,
-        page: "Creative",
-      })
-    }
     if (form) this.form = form;
     if (form === "Rote") this.skill = item?.skill
   },

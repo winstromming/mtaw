@@ -110,46 +110,13 @@ const onExport = () => {
   const json = cloneDeep(toRaw(caster));
 
   const def: TDocumentDefinitions = {
-    defaultStyle: { fontSize: 10, lineHeight: 1.3 },
+    defaultStyle: { fontSize: 8, lineHeight: 1.3 },
     pageSize: { width: w, height: h },
-    pageMargins: m * 3,
+    pageMargins: m * 2,
     background: [
       {
         canvas: [
           { type: "rect", x: 0, y: 0, w: w, h: h, color: background },
-          { type: "rect", x: m, y: m, w: w - p, h: h - p, color: accent },
-          {
-            type: "rect",
-            x: m + 1,
-            y: m + 1,
-            w: w - p - 2,
-            h: h - p - 2,
-            color: background,
-          },
-          {
-            type: "rect",
-            x: m + 2,
-            y: m + 2,
-            w: w - p - 4,
-            h: h - p - 4,
-            color: accent,
-          },
-          {
-            type: "rect",
-            x: m + 3,
-            y: m + 3,
-            w: w - p - 6,
-            h: h - p - 6,
-            color: background,
-          },
-          // L
-          { type: "rect", x: m + 3, y: m + 77, w: w - p - 6, h: 1, color: accent },
-          { type: "rect", x: m + 2, y: m + 78, w: w - p - 4, h: 1, color: background },
-          { type: "rect", x: m + 3, y: m + 79, w: w - p - 6, h: 1, color: accent },
-          // M
-          { type: "rect", x: m + 3, y: m + 282, w: w - p - 6, h: 1, color: accent },
-          { type: "rect", x: m + 2, y: m + 283, w: w - p - 4, h: 1, color: background },
-          { type: "rect", x: m + 3, y: m + 284, w: w - p - 6, h: 1, color: accent },
         ],
       },
     ],
@@ -158,204 +125,78 @@ const onExport = () => {
         columnGap: p,
         columns: [
           {
-            width: "33%",
-            stack: [
-              // Caster Details
-              {
-                text: `${caster.details.name || "Shadow Name"}`, color: darker, bold: true
-              },
-              { text: " ", fontSize: 2 },
-              {
-                columns: [
-                  { width: "*", text: `${caster.details.concept || "Concept"}`, alignment: "left" },
-                  { width: "auto", text: `Gnosis ${caster.traits.Gnosis}`, alignment: "right"}
-                ]
-              },
-              {
-                columns: [
-                  { width: "*", text: `${caster.details.virtue || "Virtue"}, ${caster.details.vice || "Vice"}` },
-                  { width: "auto", text: `Wisdom ${caster.traits.Wisdom}`, alignment: "right"}
-                ]
-              }
-            ],
-          },
-          {
             width: "34%",
             stack: [
               // Caster Details
-              { text: " ", bold: true },
+              { text: `${caster.details.name || "Shadow Name"}`, color: darker, bold: true },
+              { text: " ", fontSize: 2 },
+              { text: `${caster.details.concept || "Concept"}`, bold: true },
+              { text: `${caster.details.virtue} • ${caster.details.vice} • Gnosis ${caster.traits.Gnosis} • Wisdom ${caster.traits.Wisdom}` },
+              { text: `${caster.details.path?.name ?? "Path"} • ${caster.details.order?.name ?? "Order"}` },
+              { text: `${caster.details.cabal ?? "No Cabal"} • ${caster.details.legacy ?? "No Legacy"}` },
+              { text: " " },
+              // Appearance
+              { bold: true, color: darker, text: "Appearance" },
+              { text: " ", fontSize: 2 },
+              { text: `${caster.extras.appearance}` },
+              { text: " " },
+              // Attributes
+              { bold: true, color: darker, text: "Attributes" },
+              { text: " ", fontSize: 2 },
+              { text: [
+                ...Object.entries(caster.attributes.mental).map(([key, value]) => `${key} ${value.dots}`),
+                ...Object.entries(caster.attributes.physical).map(([key, value]) => `${key} ${value.dots}`),
+                ...Object.entries(caster.attributes.social).map(([key, value]) => `${key} ${value.dots}`),
+                ].join(", ")
+              },
+              { text: " " },
+              // Skills
+              { bold: true, color: darker, text: "Skills" },
+              { text: " ", fontSize: 2 },
+              { text: [
+                ...Object.entries(caster.skills.mental).filter(([key, value]) => value.dots > 0).map(([key, value]) => `${key}${value.label !== "" ? ` (${value.label})` : ""} ${value.dots}`),
+                ...Object.entries(caster.skills.physical).filter(([key, value]) => value.dots > 0).map(([key, value]) => `${key}${value.label !== "" ? ` (${value.label})` : ""} ${value.dots}`),
+                ...Object.entries(caster.skills.social).filter(([key, value]) => value.dots > 0).map(([key, value]) => `${key}${value.label !== "" ? ` (${value.label})` : ""} ${value.dots}`),
+                ].join(", ")
+              },
+              { text: " " },
+              // Merits
+              { bold: true, color: darker, text: "Merits" },
               { text: " ", fontSize: 2 },
               {
-                columns: [
-                  { width: "*", text: `${caster.details.path?.name || "No Path"}` },
-                  { width: "auto", text: `${caster.details.legacy || "No Legacy"}`, alignment: "right" },
-                ]
+                text: caster.merits
+                  .filter((i) => i.name.length)
+                  .map((item) => `${item.name} ${item.dots}`).join(", "),
               },
-              {
-                columns: [
-                  { width: "*", text: `${caster.details.order?.name || "No Order"}`},
-                  { width: "auto", text: `${caster.details.cabal || "No Cabal"}`, alignment: "right" },
-                ]
-              },
-            ],
-          },
-          {
-            width: "33%",
-            stack: [
-              // Experience
-              {
-                columns: [
-                  ...Array.from({ length: caster.health.aggravated }).map(
-                    (_i) => ({ width: 13, svg: svgAggr }),
-                  ),
-                  ...Array.from({ length: caster.health.lethal }).map((_i) => ({
-                    width: 13,
-                    svg: svgLeth,
-                  })),
-                  ...Array.from({ length: caster.health.bashing }).map((_i) => ({
-                    width: 13,
-                    svg: svgBash,
-                  })),
-                  ...Array.from({ length: healthRemaining }).map((_i) => ({
-                    width: 13,
-                    svg: svgNone,
-                  })),
-                ],
-                lineHeight: 1,
-                columnGap: 0,
-              },
-              { text: " ", fontSize: 3 },
-              {
-                columns: [
-                  { width: "*", text: `${caster.progress.NormalExperience} Normal Experience` },
-                  { width: "auto", text: `(${caster.progress.NormalBeats}/5 Beats)`, alignment: "right"}
-                ]
-              },
-              {
-                columns: [
-                  { width: "*", text: `${caster.progress.ArcaneExperience} Arcane Experience` },
-                  { width: "auto", text: `(${caster.progress.ArcaneBeats}/5 Beats)`, alignment: "right"}
-                ]
-              },
-            ],
-          },
-        ],
-      },
-      { text: " " },
-      { text: " " },
-      {
-        columnGap: p,
-        columns: [
-          {
-            width: "33%",
-            stack: [
-              Object.entries(caster.attributes.mental).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    { text: key, alignment: "left" },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
               { text: " " },
-              Object.entries(caster.skills.mental).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    {
-                      text: [
-                        { text: `${key}` },
-                        { text: `${value.label !== "" ? ` (${value.label})` : ""}`, opacity: 0.5 },
-                      ],
-                    },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
-            ],
-          },
-          {
-            width: "34%",
-            stack: [
-              Object.entries(caster.attributes.physical).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    { text: key, alignment: "left" },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
+              // Backstory
+              { bold: true, color: darker, text: "Backstory" },
+              { text: " ", fontSize: 2 },
+              { text: `${caster.extras.backstory}` },
               { text: " " },
-              Object.entries(caster.skills.physical).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    {
-                      text: [
-                        { text: `${key}` },
-                        { text: `${value.label !== "" ? ` (${value.label})` : ""}`, opacity: 0.5 },
-                      ],
-                      alignment: "left",
-                    },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
-            ],
-          },
-          {
-            width: "33%",
-            stack: [
-              Object.entries(caster.attributes.social).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    { text: key, alignment: "left" },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
+              // People
+              { bold: true, color: darker, text: "People" },
+              { text: " ", fontSize: 2 },
+              { text: `${caster.extras.people}` },
               { text: " " },
-              Object.entries(caster.skills.social).map(([key, value]) => {
-                return {
-                  columnGap: 0,
-                  columns: [
-                    {
-                      text: [
-                        { text: `${key}` },
-                        { text: `${value.label !== "" ? ` (${value.label})` : ""}`, opacity: 0.5 },
-                      ],
-                    },
-                    ...circles(value.dots),
-                  ],
-                };
-              }),
-            ],
+              // Places
+              { bold: true, color: darker, text: "Places" },
+              { text: " ", fontSize: 2 },
+              { text: `${caster.extras.places}` },
+              { text: " " },
+            ]
           },
-        ],
-      },
-      { text: " " },
-      { text: " " },
-      {
-        columnGap: p,
-        columns: [
           {
             width: "33%",
             stack: [
               // Arcana
               { bold: true, color: darker, text: "Arcana" },
               { text: " ", fontSize: 2 },
-              Object.entries(caster.arcana)
-                .filter(([_name, value]) => value.dots > 0)
-                .map(([name, value]) => ({
-                  columnGap: 0,
-                  columns: [
-                    { text: name, alignment: "left" },
-                    ...circles(value.dots, true),
-                  ],
-                })),
+              {
+                text: Object.entries(caster.arcana)
+                  .filter(([_name, value]) => value.dots > 0)
+                  .map(([name, value]) => `${name} ${value.dots}`),
+              },
               { text: " " },
               // Nimbus
               { bold: true, color: darker, text: "Nimbus" },
@@ -401,55 +242,52 @@ const onExport = () => {
                   { text: `${item.dedicated ? "Dedicated " : ""}${item.type}`, opacity: 0.5 },
                 ],
               })),
-              { text: " " },
-            ],
-          },
-          {
-            width: "34%",
-            stack: [
-              // Merits
-              { bold: true, color: darker, text: "Merits" },
-              { text: " ", fontSize: 2 },
-              caster.merits
-                .filter((i) => i.name.length)
-                .map((item) => ({
-                  columnGap: 0,
-                  columns: [
-                    { text: item.name, alignment: "left" },
-                    ...circles(item.dots, true),
-                  ],
-                })),
-              { text: " " },
-              // Appearance
-              { bold: true, color: darker, text: "Appearance" },
-              { text: " ", fontSize: 2 },
-              { text: `${caster.extras.appearance}` },
-              { text: " " },
-              // Backstory
-              { bold: true, color: darker, text: "Backstory" },
-              { text: " ", fontSize: 2 },
-              { text: `${caster.extras.backstory}` },
-              { text: " " },
-              // People
-              { bold: true, color: darker, text: "People" },
-              { text: " ", fontSize: 2 },
-              { text: `${caster.extras.people}` },
-              { text: " " },
-              // Places
-              { bold: true, color: darker, text: "Places" },
-              { text: " ", fontSize: 2 },
-              { text: `${caster.extras.places}` },
-              { text: " " },
               // Things
               { bold: true, color: darker, text: "Items" },
               { text: " ", fontSize: 2 },
               { text: `${caster.extras.things}` },
               { text: " " },
-            ],
+            ]
           },
           {
             width: "33%",
             stack: [
+              // Experience
+              {
+                columns: [
+                  ...Array.from({ length: caster.health.aggravated }).map(
+                    (_i) => ({ width: 13, svg: svgAggr }),
+                  ),
+                  ...Array.from({ length: caster.health.lethal }).map((_i) => ({
+                    width: 13,
+                    svg: svgLeth,
+                  })),
+                  ...Array.from({ length: caster.health.bashing }).map((_i) => ({
+                    width: 13,
+                    svg: svgBash,
+                  })),
+                  ...Array.from({ length: healthRemaining }).map((_i) => ({
+                    width: 13,
+                    svg: svgNone,
+                  })),
+                ],
+                lineHeight: 1,
+                columnGap: 0,
+              },
+              { text: " ", fontSize: 2 },
+              {
+                columns: [
+                  { width: "*", text: `${caster.progress.NormalExperience} Normal Experience` },
+                  { width: "auto", text: `(${caster.progress.NormalBeats}/5 Beats)`, alignment: "right"}
+                ]
+              },
+              {
+                columns: [
+                  { width: "*", text: `${caster.progress.ArcaneExperience} Arcane Experience` },
+                  { width: "auto", text: `(${caster.progress.ArcaneBeats}/5 Beats)`, alignment: "right"}
+                ]
+              },
+              { text: " " },
               // Aspirations
               { bold: true, color: darker, text: "Aspirations" },
               { text: " ", fontSize: 2 },
@@ -469,7 +307,7 @@ const onExport = () => {
               { text: caster.conditions.map((c) => `• ${c}`).join("\n") },
               { text: " " },
               // Active Spells
-              { bold: true, color: darker, text: "Active Spells" },
+              { bold: true, color: darker, text: "Active" },
               { text: " ", fontSize: 2 },
               caster.active.map((item) => ({
                 stack: [
@@ -482,14 +320,15 @@ const onExport = () => {
                   { text: " ", fontSize: 2 },
                 ],
               })),
-            ],
-          },
+              // JSON DUMP
+              {
+                fontSize: 1,
+                color: background,
+                text: `rawjsondump:${JSON.stringify(json)}`,
+              },
+            ]
+          }
         ],
-      },
-      {
-        fontSize: 1,
-        color: background,
-        text: `rawjsondump:${JSON.stringify(json)}`,
       },
     ],
   };
