@@ -131,9 +131,9 @@ const onExport = () => {
               { text: `${caster.details.name || "Shadow Name"}`, color: darker, bold: true },
               { text: " ", fontSize: 2 },
               { text: `${caster.details.concept || "Concept"}`, bold: true },
-              { text: `${caster.details.virtue} • ${caster.details.vice} • Gnosis ${caster.traits.Gnosis} • Wisdom ${caster.traits.Wisdom}` },
-              { text: `${caster.details.path?.name ?? "Path"} • ${caster.details.order?.name ?? "Order"}` },
-              { text: `${caster.details.cabal ?? "No Cabal"} • ${caster.details.legacy ?? "No Legacy"}` },
+              { text: `${caster.details.virtue || "Virtue"} • ${caster.details.vice || "Vice"} • Gnosis ${caster.traits.Gnosis || 1} • Wisdom ${caster.traits.Wisdom || 7}` },
+              { text: `${caster.details.path?.name || "Path"} • ${caster.details.order?.name || "Order"}` },
+              { text: `${caster.details.cabal || "No Cabal"} • ${caster.details.legacy || "No Legacy"}` },
               { text: " " },
               // Appearance
               { bold: true, color: darker, text: "Appearance" },
@@ -195,7 +195,8 @@ const onExport = () => {
               {
                 text: Object.entries(caster.arcana)
                   .filter(([_name, value]) => value.dots > 0)
-                  .map(([name, value]) => `${name} ${value.dots}`),
+                  .map(([name, value]) => `${name} ${value.dots}`)
+                  .join(", "),
               },
               { text: " " },
               // Nimbus
@@ -242,16 +243,19 @@ const onExport = () => {
                   { text: `${item.dedicated ? "Dedicated " : ""}${item.type}`, opacity: 0.5 },
                 ],
               })),
-              // Things
+              { text: " " },
+              // Items
               { bold: true, color: darker, text: "Items" },
               { text: " ", fontSize: 2 },
               { text: `${caster.extras.things}` },
-              { text: " " },
             ]
           },
           {
             width: "33%",
             stack: [
+              // Health
+              { bold: true, color: darker, text: "Health" },
+              { text: " ", fontSize: 2 },
               // Experience
               {
                 columns: [
@@ -307,7 +311,7 @@ const onExport = () => {
               { text: caster.conditions.map((c) => `• ${c}`).join("\n") },
               { text: " " },
               // Active Spells
-              { bold: true, color: darker, text: "Active" },
+              { bold: true, color: darker, text: "Active Spells" },
               { text: " ", fontSize: 2 },
               caster.active.map((item) => ({
                 stack: [
