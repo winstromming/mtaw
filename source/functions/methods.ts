@@ -497,7 +497,7 @@ export const getCastingEffectsSummary = (caster: Caster, casting: Casting) => {
 export const getCastingCopyText = (caster: Caster, casting: Casting) => {
   const out = [];
   out.push("&{template:default}");
-  out.push(`{{name=${getCastingNameSummary(caster, casting)}`);
+  out.push(`{{name=${getCastingNameSummary(caster, casting)}}}`);
   out.push(`{{summary=${getCastingDescriptionSummary(caster, casting)}}}`);
   out.push(`{{extras=${getCastingEffectsSummary(caster, casting) || "None"}}}`);
   out.push(`{{factors=${getCastingFactorsSummary(caster, casting)}}}`);
