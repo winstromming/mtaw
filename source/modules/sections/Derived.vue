@@ -29,7 +29,7 @@
       </n-input-number>
     </n-gi>
     <n-gi>
-      <n-input-number class="text-right" :input-props="{ style: '--n-text-color: var(--n-color-target)' }" v-model:value="caster.traits.Gnosis" :placeholder="caster.traits.Gnosis.toString()" :show-button="false">
+      <n-input-number class="text-right" :input-props="{ style: '--n-text-color: var(--n-color-target)' }" v-model:value="caster.traits.Gnosis" placeholder="0" :show-button="false">
         <template #prefix>
           <n-text strong>Gnosis</n-text>
         </template>

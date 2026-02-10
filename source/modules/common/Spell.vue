@@ -15,7 +15,7 @@
           </n-button>
         </n-flex>
         <n-text style="opacity: 0.75">
-          <n-text>{{ ensureTrailingPeriod(spell.description) }}</n-text>
+          <n-input class="choose-text" type="textarea" :autosize="{ minRows: 1 }" placeholder="What does this spell do?" v-model:value="spell.description" />
           <n-text v-if="spell.withstand"> Withstand is {{ ensureTrailingPeriod(spell.withstand) }}</n-text>
         </n-text>
         <n-flex style="opacity: 0.6; font-size: 12px" :size="3" justify="flex-start" align="center" :wrap="false">
@@ -25,7 +25,7 @@
           <n-text>•</n-text>
           <n-select size="tiny" class="choose-text" :color="true" style="--font-size: 10px; width: auto" :consistent-menu-width="false" placeholder="Factor" v-model:value="spell.factor" :options="[{ label: `Potency`, value: 'Potency' }, { label: `Duration`, value: 'Duration' }]" />
           <n-text>•</n-text>
-          <n-text>{{ spell.page }} Thaumaturgy</n-text>
+          <n-text>{{ spell.page }}</n-text>
         </n-flex>
       </n-space>
     </template>
@@ -89,22 +89,18 @@
 </template>
 
 <script setup lang="ts">
+import { Trash } from "lucide-vue-next";
 import { computed, getCurrentInstance } from "vue";
 import { spells } from "../../config/spells";
 import type {
     Effect,
-    Grimoire,
-    Practice,
-    Praxis,
-    Rote,
-    Source,
+    Source
 } from "../../config/types";
-import { arcanaNames, practices, purviews } from "../../config/values";
+import { purviews } from "../../config/values";
 import { dots, ensureTrailingPeriod } from "../../functions/methods";
 import { caster } from "../../store/caster";
-import { Trash, WandSparkles } from "lucide-vue-next";
-import Card from "./Card.vue";
 import { casting } from "../../store/casting";
+import Card from "./Card.vue";
 
 const sources = computed(() => [...spells, ...caster.spells]);
 const source = computed(() => sources.value.find((s) => s.name === props.spell.name));

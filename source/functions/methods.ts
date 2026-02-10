@@ -11,6 +11,7 @@ import {
 } from "../config/values";
 import type { Caster } from "../store/caster";
 import type { Casting } from "../store/casting";
+import { type Scene, scene } from "../store/scene";
 
 export const dots = (num: number) =>
   Array.from({ length: num }, () => "•").join("");
@@ -120,9 +121,16 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
   }
   // check effects
   for (const spell of casting.spells) {
-    console.log('check reach effects', spell.factor, spells.find((s) => s.name === spell.name)?.factor)
-    if (spell.page !== "Creative" && spell.factor !== spells.find((s) => s.name === spell.name)?.factor) {
-      reach += 1
+    console.log(
+      "check reach effects",
+      spell.factor,
+      spells.find((s) => s.name === spell.name)?.factor,
+    );
+    if (
+      spell.page !== "Creative" &&
+      spell.factor !== spells.find((s) => s.name === spell.name)?.factor
+    ) {
+      reach += 1;
     }
     for (const effect of spell.effects ?? []) {
       if (effect.cost) {
@@ -142,15 +150,27 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
   // spell-specific extra reach
   // reach += casting.extraReach
   // arcana attainments
-  if (casting.attainments?.permanence && casting.factors.duration.startsWith("a")) reach--;
-  if (casting.attainments?.everywhere && casting.factors.scale.startsWith("a")) reach--;
-  if (casting.attainments?.timeInABottle && casting.factors.castingTime.startsWith("a")) reach--;
+  if (
+    casting.attainments?.permanence &&
+    casting.factors.duration.startsWith("a")
+  )
+    reach--;
+  if (casting.attainments?.everywhere && casting.factors.scale.startsWith("a"))
+    reach--;
+  if (
+    casting.attainments?.timeInABottle &&
+    casting.factors.castingTime.startsWith("a")
+  )
+    reach--;
   if (reach < 0) reach = 0;
   return reach;
 };
 
 export const getCastingReachLimit = (caster: Caster, casting: Casting) => {
-  if (casting.spells[0] && (casting.form === "Rote" || casting.form === "Grimoire")) {
+  if (
+    casting.spells[0] &&
+    (casting.form === "Rote" || casting.form === "Grimoire")
+  ) {
     return 5 - (casting.spells[0].primaryArcana.level - 1);
   }
   const reaches: number[] = [];
@@ -181,7 +201,7 @@ export const getCastingManaCost = (caster: Caster, casting: Casting) => {
     }
     if (spell.extraMana) mana += spell.extraMana;
   }
-  // if (scene.negation) mana += scene.negation
+  if (scene.negation) mana += scene.negation;
   if (casting.factors.duration === "a6") mana++;
   if (casting.attainments.permanence) mana++;
   if (casting.attainments.conditionalDuration) mana++;
@@ -209,8 +229,10 @@ export const getPotencyPenalty = (caster: Caster, casting: Casting) => {
   let penalty = (parseInt(casting.factors.potency.substring(1), 10) - 1) * 2;
   // does every spell being cast have potency as primary factor
   if (casting.spells.every((s) => s.factor === "Potency")) {
-    let arcana = casting.spells.sort((a, b) => a.primaryArcana.level - b.primaryArcana.level)[0]?.primaryArcana.arcana!
-    penalty -= (caster.arcana[arcana].dots - 1) * 2
+    const arcana = casting.spells.sort(
+      (a, b) => a.primaryArcana.level - b.primaryArcana.level,
+    )[0]?.primaryArcana.arcana!;
+    penalty -= (caster.arcana[arcana].dots - 1) * 2;
   }
   if (penalty <= 0) penalty = 0;
   return penalty;
@@ -221,8 +243,10 @@ export const getDurationPenalty = (caster: Caster, casting: Casting) => {
   let penalty = durations.get(casting.factors.duration)?.penalty ?? 0;
   // does every spell being cast have duration as primary factor
   if (casting.spells.every((s) => s.factor === "Duration")) {
-    let arcana = casting.spells.sort((a, b) => a.primaryArcana.level - b.primaryArcana.level)[0]?.primaryArcana.arcana!
-    penalty -= (caster.arcana[arcana].dots - 1) * 2
+    const arcana = casting.spells.sort(
+      (a, b) => a.primaryArcana.level - b.primaryArcana.level,
+    )[0]?.primaryArcana.arcana!;
+    penalty -= (caster.arcana[arcana].dots - 1) * 2;
   }
   if (penalty <= 0) penalty = 0;
   return penalty;
@@ -257,8 +281,8 @@ export const getCastingDicePool = (caster: Caster, casting: Casting) => {
   // duration
   penalties += getDurationPenalty(caster, casting);
   // scale
-  let suff = casting.factors.scale.split("-")
-  let lim = suff[0] ?? casting.factors.scale
+  const suff = casting.factors.scale.split("-");
+  const lim = suff[0] ?? casting.factors.scale;
   penalties += scales.get(lim)?.penalty ?? 0;
   // yantras
   casting.yantras.forEach((yantra: Yantra) => {
@@ -271,11 +295,20 @@ export const getCastingDicePool = (caster: Caster, casting: Casting) => {
   return pool;
 };
 
-export const getCastingParadoxAmount = (caster: Caster, casting: Casting) => {
+export const getCastingParadoxAmount = (
+  caster: Caster,
+  casting: Casting,
+  scene: Scene,
+) => {
   let pool = 0,
     mustRoll = false,
     usedReach = getCastingReachUsed(caster, casting),
     freeReach = getCastingReachLimit(caster, casting);
+
+  if (scene.paradox > 0) {
+    pool += scene.paradox;
+    mustRoll = true;
+  }
 
   if (usedReach > freeReach) {
     pool += (freeReach - usedReach) * -1;
@@ -289,6 +322,9 @@ export const getCastingParadoxAmount = (caster: Caster, casting: Casting) => {
   if (dedicated.length === 1) {
     if (dedicated[0]?.yantraKey[0] === "s") pool -= 3;
     if (dedicated[0]?.yantraKey[0] !== "s") pool -= 2;
+  }
+  if (scene.negation > 0) {
+    pool -= scene.negation;
   }
   if (dedicated.length > 1) {
     pool -= 3;
@@ -346,6 +382,19 @@ export const getCastingDescriptionSummary = (
   return output;
 };
 
+export const getCastingTimeTurns = (caster: Caster, casting: Casting) => {
+  if (casting.factors.castingTime[0] === "s") return "";
+  else {
+    let turns = casting.yantras.length <= 1 ? 1 : casting.yantras.length;
+    if (some(casting.yantras, ["yantraKey", "a3"]))
+      turns = turns === 1 ? 2 : turns;
+    const mana = getCastingManaCost(caster, casting);
+    const min = mana / caster.traits.Gnosis;
+    if (turns < min) turns = Math.ceil(min);
+    return `(${turns} turn${turns !== 1 ? "s" : ""})`;
+  }
+};
+
 export const getCastingTimeSummary = (caster: Caster, casting: Casting) => {
   const time = getBaseCastingTime(caster);
   // standard
@@ -364,6 +413,9 @@ export const getCastingTimeSummary = (caster: Caster, casting: Casting) => {
     let turns = casting.yantras.length <= 1 ? 1 : casting.yantras.length;
     if (some(casting.yantras, ["yantraKey", "a3"]))
       turns = turns === 1 ? 2 : turns;
+    const mana = getCastingManaCost(caster, casting);
+    const min = mana / caster.traits.Gnosis;
+    if (turns < min) turns = Math.ceil(min);
     let output = `${turns} turn${turns !== 1 ? "s" : ""}`;
     output += " casting";
     if (casting.attainments.timeInABottle) output += " (Time in a Bottle)";
@@ -396,13 +448,14 @@ export const getRangeSummary = (_caster: Caster, casting: Casting) => {
 };
 
 export const getScaleSummary = (_caster: Caster, casting: Casting) => {
-  let suff = casting.factors.scale.split("-")
-  let lim = suff[0] ?? casting.factors.scale
-  let typ = suff[1] ?? undefined
+  const suff = casting.factors.scale.split("-");
+  const lim = suff[0] ?? casting.factors.scale;
+  const typ = suff[1] ?? undefined;
   const scale = scales.get(lim);
-  let output = ""
-  if (typ === "subjects") output = `${scale?.number} subject${scale?.number === 1 ? "" : "s"}`
-  if (typ === "area") output = `${upperFirst(scale?.area)}`
+  let output = "";
+  if (typ === "subjects")
+    output = `${scale?.number} subject${scale?.number === 1 ? "" : "s"}`;
+  if (typ === "area") output = `${upperFirst(scale?.area)}`;
   if (casting.attainments.everywhere) output += " (Everywhere)";
   return output;
 };
@@ -432,9 +485,13 @@ export const getDicePoolSummary = (caster: Caster, casting: Casting) => {
   }
 };
 
-export const getParadoxSummary = (caster: Caster, casting: Casting) => {
-  let summary;
-  const dice = getCastingParadoxAmount(caster, casting);
+export const getParadoxSummary = (
+  caster: Caster,
+  casting: Casting,
+  scene: Scene,
+) => {
+  let summary: string;
+  const dice = getCastingParadoxAmount(caster, casting, scene);
   if (dice === "Chance") {
     summary = "Chance";
   } else if (dice === 1) {
@@ -442,15 +499,9 @@ export const getParadoxSummary = (caster: Caster, casting: Casting) => {
   } else {
     summary = `${dice} dice`;
   }
-  // if (scene.witnesses > 0) {
-  //   if (scene.witnesses === 2) {
-  //     summary += " (9-again)"
-  //   } else if (scene.witnesses === 3) {
-  //     summary += " (8-again)"
-  //   } else if (scene.witnesses === 4) {
-  //     summary += " (as rote)"
-  //   }
-  // }
+  if (scene.paradox > 0) {
+    summary += ` (+${scene.paradox * Math.ceil(caster.traits.Gnosis / 2)} from previous rolls this scene, ${scene.negation} negated with Mana)`;
+  }
   return summary;
 };
 
@@ -473,7 +524,9 @@ export const getCastingFactorsSummary = (caster: Caster, casting: Casting) => {
   summary.push(`${getCastingTimeSummary(caster, casting).toLowerCase()}`);
   summary.push(`${getRangeSummary(caster, casting).toLowerCase()}`);
   summary.push(`${getScaleSummary(caster, casting).toLowerCase()}`);
-  return summary.join(", ");
+  const usedReach = getCastingReachUsed(caster, casting);
+  const limitReach = getCastingReachLimit(caster, casting);
+  return `${summary.join(", ")}. ${usedReach}/${limitReach} Reach.`;
 };
 
 export const getCastingEffectsSummary = (caster: Caster, casting: Casting) => {
@@ -483,13 +536,15 @@ export const getCastingEffectsSummary = (caster: Caster, casting: Casting) => {
   // if (spell.extraMana) summary.push(`${spell.extraMana} Mana.`)
   // if (spell.extraReach) summary.push(`+${spell.extraReach} Reach.`)
   // if (spell.spendWillpower) summary.unshift("Willpower spent.")
-  for (let sp of casting.spells) {
-    if (sp.page !== 'Creative') {
-      let src = spells.find((n) => n.name === sp.name)
-      if (src?.factor && src.factor !== sp.factor) summary.push("Change primary factor.")
+  for (const sp of casting.spells) {
+    if (sp.page !== "Creative") {
+      const src = spells.find((n) => n.name === sp.name);
+      if (src?.factor && src.factor !== sp.factor)
+        summary.push("Change primary factor.");
     }
   }
-  if (caster.active.length >= caster.traits.Gnosis) summary.push("Casting above active limit.")
+  if (caster.active.length >= caster.traits.Gnosis)
+    summary.push("Casting above active limit.");
   if (summary.length === 0) summary.push("No additional effects.");
   return summary.join(" ");
 };
@@ -502,9 +557,11 @@ export const getCastingCopyText = (caster: Caster, casting: Casting) => {
   out.push(`{{extras=${getCastingEffectsSummary(caster, casting) || "None"}}}`);
   out.push(`{{factors=${getCastingFactorsSummary(caster, casting)}}}`);
   out.push(`{{yantras=${getYantrasSummary(caster, casting) || "None"}}}`);
-  out.push(`{{paradox=${getParadoxSummary(caster, casting) || "None"}}}`);
+  out.push(
+    `{{paradox=${getParadoxSummary(caster, casting, scene) || "None"}}}`,
+  );
   out.push(
     `{{=[Roll ${getDicePoolSummary(caster, casting)} to cast](!&#13;&#91;[&#63;{Number of dice|${getCastingDicePool(caster, casting)}}d10>8!>&#63;{Explodes on|10}]&#93; Successes)}}`,
   );
   return out.join(" ");
-}
+};

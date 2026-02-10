@@ -48,34 +48,26 @@
 
 <script setup lang="ts">
 import { cloneDeep } from "lodash";
+import { Copy, Plus, Undo2, Zap } from "lucide-vue-next";
 import { useMessage } from "naive-ui";
 import { computed } from "vue";
+import { spells } from "../../config/spells";
+import type { Arcana, Source } from "../../config/types";
+import { combinedLimit, practices, purviews } from "../../config/values";
 import {
     dots,
     ensureTrailingPeriod,
     getCastingCopyText,
-    getCastingDescriptionSummary,
     getCastingDicePool,
-    getCastingEffectsSummary,
-    getCastingFactorsSummary,
     getCastingManaCost,
     getCastingName,
-    getCastingNameSummary,
     getCastingParadoxAmount,
     getCastingReachLimit,
-    getCastingReachUsed,
-    getCastingTimeSummary,
-    getDicePoolSummary,
-    getParadoxSummary,
-    getYantrasSummary,
+    getCastingReachUsed
 } from "../../functions/methods";
 import { caster } from "../../store/caster";
 import { casting } from "../../store/casting";
 import { scene } from "../../store/scene";
-import { Copy, Plus, Undo2, Zap } from "lucide-vue-next";
-import type { Arcana, Practice, Source } from "../../config/types";
-import { spells } from "../../config/spells";
-import { combinedLimit, practices, purviews } from "../../config/values";
 
 const message = useMessage();
 
@@ -149,8 +141,7 @@ const isAddingDisabled = computed(() => {
 const hasParadox = computed(() => {
   return (
     usedReach.value > freeReach.value ||
-    scene.paradox > 0 ||
-    scene.witnesses > 0
+    scene.paradox > 0
   );
 });
 
@@ -159,7 +150,7 @@ const totalMana = computed(() => {
 });
 
 const paradoxDice = computed(() => {
-  return getCastingParadoxAmount(caster, casting);
+  return getCastingParadoxAmount(caster, casting, scene);
 });
 const reset = () => {
   casting.reset();

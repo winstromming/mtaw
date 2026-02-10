@@ -3,6 +3,19 @@
     <n-space vertical :size="6">
       <n-input-group>
         <n-input-group-label style="width: 5.8em">
+          <n-text strong>Paradox</n-text>
+        </n-input-group-label>
+      <n-input-number v-model:value="scene.paradox" placeholder="0">
+        <template #suffix>
+          <n-text style="opacity: 0.5">(from scene)</n-text>
+        </template>
+      </n-input-number>
+      </n-input-group>
+        <!-- <n-select v-model:value="casting.factors.potency" :options="potencyOptions" /> -->
+    </n-space>
+    <n-space vertical :size="6">
+      <n-input-group>
+        <n-input-group-label style="width: 5.8em">
           <n-text strong>Potency</n-text>
         </n-input-group-label>
         <n-select v-model:value="casting.factors.potency" :options="potencyOptions" />
@@ -39,11 +52,12 @@
       </Card>
     </n-space>
     <n-space vertical :size="6">
-      <n-input-group>
+      <n-input-group style="position: relative;">
         <n-input-group-label style="width: 5.8em">
           <n-text strong>Casting</n-text>
         </n-input-group-label>
         <n-select v-model:value="casting.factors.castingTime" :options="castingTimeOptions" />
+        <n-text style="opacity: 0.5; position: absolute; top: 9px; right: 30px; pointer-events: none">{{turns}}</n-text>
       </n-input-group>
       <Card v-if="caster.arcana.Time.dots < 4 === false">
         <template #content>
@@ -106,239 +120,28 @@
         </template>
       </Card>
     </n-space>
+    <n-input-group>
+      <n-input-group-label style="width: 5.8em">
+        <n-text strong>Mana</n-text>
+      </n-input-group-label>
+      <n-input-number style="width: 100%" v-model:value="scene.negation">
+        <template #suffix>
+        <n-text style="opacity: 0.5">(extra spent)</n-text>
+        </template>
+  </n-input-number>
+    </n-input-group>
   </n-space>
-  <!-- <n-space vertical :size="6">
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
-          <n-text strong>Potency</n-text>
-        </n-input-group-label>
-        <n-select v-model:value="casting.factors.potency" :options="potencyOptions" />
-      </n-input-group>
-    </n-space>
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
-          <n-text strong>Duration</n-text>
-        </n-input-group-label>
-        <n-select v-model:value="casting.factors.duration" :options="durationOptions" />
-      </n-input-group>
-      <Card v-if="caster.arcana.Matter.dots < 2 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.permanence" size="small" :disabled="caster.arcana.Matter.dots < 2" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Permanence (Matter {{ dots(2) }})</n-text>
-              <n-text>Advanced Scale costs 1 Mana instead of 1 Reach.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-      <Card v-if="caster.arcana.Fate.dots < 2 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.conditionalDuration" size="small" :disabled="caster.arcana.Fate.dots < 2" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Conditional Duration (Fate {{ dots(2) }})</n-text>
-              <n-text>Spend 1 Mana to end the spell when a condition is met, adding 1-3 levels of Duration based on the nature of the condition.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-    </n-space>
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
-          <n-text strong>Casting</n-text>
-        </n-input-group-label>
-        <n-select v-model:value="casting.factors.castingTime" :options="castingTimeOptions" />
-      </n-input-group>
-      <Card v-if="caster.arcana.Time.dots < 4 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.timeInABottle" size="small" :disabled="caster.arcana.Time.dots < 4" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Time in a Bottle (Time {{ dots(4) }})</n-text>
-              <n-text>Advanced Casting Time costs 1 Mana instead of 1 Reach.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-    </n-space>
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
-          <n-text strong>Range</n-text>
-        </n-input-group-label>
-        <n-select v-model:value="casting.factors.range" :options="rangeOptions" />
-      </n-input-group>
-      <Card v-if="caster.arcana.Space.dots < 2 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.sympatheticRange" size="small" :disabled="caster.arcana.Space.dots < 2" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Sympathetic Range (Space {{ dots(2) }})</n-text>
-              <n-text>Subject can be beyond sensory range. Requires Advanced Range, a sympathy Yantra and costs 1 Mana.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-      <Card v-if="caster.arcana.Time.dots < 2 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.temporalSympathy" size="small" :disabled="caster.arcana.Time.dots < 2" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Temporal Sympathy (Time {{ dots(2) }})</n-text>
-              <n-text>Cast a spell at subject's past self. Requires Advanced Range, a sympathy Yantra and costs +1 Mana. Can only be used with Time spells that allow it or spells combined with them.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-    </n-space>
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
-          <n-text strong>Scale</n-text>
-        </n-input-group-label>
-        <n-select v-model:value="casting.factors.scale" :options="scaleOptions" />
-      </n-input-group>
-      <Card v-if="caster.arcana.Space.dots < 4 === false">
-        <template #content>
-          <n-space :wrap="false">
-            <n-switch v-model:value="casting.attainments.everywhere" size="small" :disabled="caster.arcana.Space.dots < 4" />
-            <n-space vertical size="small" style="line-height: 20px>
-              <n-text strong>Attainment: Everywhere (Space {{ dots(4) }})</n-text>
-              <n-text>Advanced Scale costs 1 Mana instead of 1 Reach.</n-text>
-            </n-space>
-          </n-space>
-        </template>
-      </Card>
-    </n-space>
-  </n-space> -->
-  <!-- <Card title="Factors">
-    <template #header> Summary </template>
-    <template #footer>
-      <n-space vertical :size="6">
-        <n-space vertical :size="6">
-          <n-input-group>
-            <n-input-group-label style="width: 5.8em">
-              <n-text strong>Potency</n-text>
-            </n-input-group-label>
-            <n-select v-model:value="casting.factors.potency" :options="potencyOptions" />
-          </n-input-group>
-        </n-space>
-        <n-space vertical :size="6">
-          <n-input-group>
-            <n-input-group-label style="width: 5.8em">
-              <n-text strong>Duration</n-text>
-            </n-input-group-label>
-            <n-select v-model:value="casting.factors.duration" :options="durationOptions" />
-          </n-input-group>
-          <Card v-if="caster.arcana.Matter.dots < 2 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.permanence" size="small" :disabled="caster.arcana.Matter.dots < 2" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Permanence (Matter {{ dots(2) }})</n-text>
-                  <n-text>Advanced Scale costs 1 Mana instead of 1 Reach.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-          <Card v-if="caster.arcana.Fate.dots < 2 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.conditionalDuration" size="small" :disabled="caster.arcana.Fate.dots < 2" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Conditional Duration (Fate {{ dots(2) }})</n-text>
-                  <n-text>Spend 1 Mana to end the spell when a condition is met, adding 1-3 levels of Duration based on the nature of the condition.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-        </n-space>
-        <n-space vertical :size="6">
-          <n-input-group>
-            <n-input-group-label style="width: 5.8em">
-              <n-text strong>Casting</n-text>
-            </n-input-group-label>
-            <n-select v-model:value="casting.factors.castingTime" :options="castingTimeOptions" />
-          </n-input-group>
-          <Card v-if="caster.arcana.Time.dots < 4 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.timeInABottle" size="small" :disabled="caster.arcana.Time.dots < 4" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Time in a Bottle (Time {{ dots(4) }})</n-text>
-                  <n-text>Advanced Casting Time costs 1 Mana instead of 1 Reach.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-        </n-space>
-        <n-space vertical :size="6">
-          <n-input-group>
-            <n-input-group-label style="width: 5.8em">
-              <n-text strong>Range</n-text>
-            </n-input-group-label>
-            <n-select v-model:value="casting.factors.range" :options="rangeOptions" />
-          </n-input-group>
-          <Card v-if="caster.arcana.Space.dots < 2 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.sympatheticRange" size="small" :disabled="caster.arcana.Space.dots < 2" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Sympathetic Range (Space {{ dots(2) }})</n-text>
-                  <n-text>Subject can be beyond sensory range. Requires Advanced Range, a sympathy Yantra and costs 1 Mana.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-          <Card v-if="caster.arcana.Time.dots < 2 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.temporalSympathy" size="small" :disabled="caster.arcana.Time.dots < 2" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Temporal Sympathy (Time {{ dots(2) }})</n-text>
-                  <n-text>Cast a spell at subject's past self. Requires Advanced Range, a sympathy Yantra and costs +1 Mana. Can only be used with Time spells that allow it or spells combined with them.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-        </n-space>
-        <n-space vertical :size="6">
-          <n-input-group>
-            <n-input-group-label style="width: 5.8em">
-              <n-text strong>Scale</n-text>
-            </n-input-group-label>
-            <n-select v-model:value="casting.factors.scale" :options="scaleOptions" />
-          </n-input-group>
-          <Card v-if="caster.arcana.Space.dots < 4 === false">
-            <template #content>
-              <n-space :wrap="false">
-                <n-switch v-model:value="casting.attainments.everywhere" size="small" :disabled="caster.arcana.Space.dots < 4" />
-                <n-space vertical size="small" style="line-height: 20px>
-                  <n-text strong>Attainment: Everywhere (Space {{ dots(4) }})</n-text>
-                  <n-text>Advanced Scale costs 1 Mana instead of 1 Reach.</n-text>
-                </n-space>
-              </n-space>
-            </template>
-          </Card>
-        </n-space>
-      </n-space>
-    </template>
-  </Card> -->
 </template>
 
 <script setup lang="ts">
 import { clone, upperFirst } from "lodash";
 import { computed } from "vue";
 import { durations, scales } from "../../config/values";
-import { dots, getBaseCastingTime } from "../../functions/methods";
+import { dots, getBaseCastingTime, getCastingTimeTurns } from "../../functions/methods";
 import { caster } from "../../store/caster";
 import { casting } from "../../store/casting";
+import { scene } from "../../store/scene";
 import Card from "../common/Card.vue";
-import SpellAttainments from "./SpellAttainments.vue";
 
 const baseCastingTime = computed(() => getBaseCastingTime(caster));
 
@@ -383,10 +186,10 @@ const standardPotencyOptions = computed(() => {
     let penalty = (i - 1) * 2;
 
     if (casting.spells.every((s) => s.factor === "Potency")) {
-      let arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
+      const arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
       if (arcanas.length) {
         let lowest = arcanas[0]!
-        for (let arcana of arcanas) {
+        for (const arcana of arcanas) {
           if (caster.arcana[arcana].dots < caster.arcana[lowest].dots) {
             lowest = arcana
           }
@@ -414,10 +217,10 @@ const advancedPotencyOptions = computed(() => {
     let penalty = (i - 1) * 2;
 
     if (casting.spells.every((s) => s.factor === "Potency")) {
-      let arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
+      const arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
       if (arcanas.length) {
         let lowest = arcanas[0]!
-        for (let arcana of arcanas) {
+        for (const arcana of arcanas) {
           if (caster.arcana[arcana].dots < caster.arcana[lowest].dots) {
             lowest = arcana
           }
@@ -481,10 +284,10 @@ const standardDurationOptions = computed(() => {
       let penalty = duration.penalty;
 
       if (casting.spells.every((s) => s.factor === "Duration")) {
-        let arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
+        const arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
         if (arcanas.length) {
           let lowest = arcanas[0]!
-          for (let arcana of arcanas) {
+          for (const arcana of arcanas) {
             if (caster.arcana[arcana].dots < caster.arcana[lowest].dots) {
               lowest = arcana
             }
@@ -516,10 +319,10 @@ const advancedDurationOptions = computed(() => {
       let penalty = duration.penalty;
 
       if (casting.spells.every((s) => s.factor === "Duration")) {
-        let arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
+        const arcanas = casting.spells.map((s) => s.primaryArcana.arcana)
         if (arcanas.length) {
           let lowest = arcanas[0]!
-          for (let arcana of arcanas) {
+          for (const arcana of arcanas) {
             if (caster.arcana[arcana].dots < caster.arcana[lowest].dots) {
               lowest = arcana
             }
@@ -640,4 +443,6 @@ const scaleOptions = computed(() => {
   });
   return options;
 });
+
+const turns = computed(() => getCastingTimeTurns(caster, casting))
 </script>

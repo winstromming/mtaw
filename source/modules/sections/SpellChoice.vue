@@ -9,15 +9,13 @@
 
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import { spells } from "../../config/spells";
 import type { Arcana, Source } from "../../config/types";
 import { combinedLimit, practices, purviews } from "../../config/values";
 import { dots, ensureTrailingPeriod } from "../../functions/methods";
 import { caster } from "../../store/caster";
 import { casting } from "../../store/casting";
-import Spell from "../common/Spell.vue";
 import Card from "../common/Card.vue";
-import Choose from "../common/Choose.vue";
+import Spell from "../common/Spell.vue";
 
 watch(casting.spells, () => {
   if (casting.spells.length === 0) {
@@ -54,7 +52,7 @@ const chooseSpellOptions = computed(() => {
           option.children.push({
             label: `${dots(practice.level)} ${practice.name}`,
             style: {
-              fontWeight: "600",
+              // fontWeight: "600",
             },
             disabled: false,
             value: {
@@ -66,6 +64,8 @@ const chooseSpellOptions = computed(() => {
               page: "Creative",
             },
           });
+          // COMMENT OUT IF SPELL LIST ISN'T AVAILABLE
+          /*
           option.children.push(
             ...[...spells, ...caster.spells]
               .filter(
@@ -82,6 +82,7 @@ const chooseSpellOptions = computed(() => {
                 };
               }),
           );
+          */
         }
       }
       options.push(option);

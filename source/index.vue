@@ -5,7 +5,7 @@
         <n-config-provider :theme-overrides="overrides">
           <div class="sheet">
             <n-grid y-gap="6" x-gap="6" cols="12" item-responsive responsive="screen">
-              <n-gi span="12 s:6 m:8">
+              <n-gi span="12 s:6 m:8 l:6">
                 <n-space vertical :size="6">
                   <Person />
                   <Card>
@@ -17,31 +17,6 @@
                     </template>
                   </Card>
                   <n-grid y-gap="6" x-gap="6" :cols="2" item-responsive responsive="screen">
-                    <n-gi span="2 m:1">
-                      <n-space vertical :size="6">
-                        <Card>
-                          <template #content>
-                            <Arcana />
-                          </template>
-                        </Card>
-                        <Card>
-                          <template #content>
-                            <Spells />
-                          </template>
-                          <template #footer>
-                            <Tools />
-                          </template>
-                        </Card>
-                        <Card>
-                          <template #content>
-                            <Nimbus />
-                          </template>
-                          <template #footer>
-                            <Attainments />
-                          </template>
-                        </Card>
-                      </n-space>
-                    </n-gi>
                     <n-gi span="2 m:1">
                       <n-space vertical :size="6">
                         <Card>
@@ -83,15 +58,58 @@
                         </Card>
                       </n-space>
                     </n-gi>
+                    <n-gi span="2 m:1">
+                      <n-space vertical :size="6">
+                        <Card>
+                          <template #content>
+                            <Arcana />
+                          </template>
+                        </Card>
+                        <Card>
+                          <template #content>
+                            <Spells />
+                          </template>
+                          <template #footer>
+                            <Tools />
+                          </template>
+                        </Card>
+                        <Card>
+                          <template #content>
+                            <Nimbus />
+                          </template>
+                          <template #footer>
+                            <Attainments />
+                          </template>
+                        </Card>
+                      </n-space>
+                    </n-gi>
                   </n-grid>
                 </n-space>
               </n-gi>
-              <!-- Right -->
-              <n-gi span="12 s:6 m:4">
-                <n-space vertical :size="6">
-                  <Status />
-                  <Active />
-                </n-space>
+              <!-- Middle -->
+              <n-gi span="12 s:6 m:4 l:6">
+                <n-grid y-gap="6" x-gap="6" cols="2" item-responsive responsive="screen">
+                  <n-gi span="2 l:1">
+                    <n-space vertical :size="6">
+                      <Status />
+                      <Active />
+                    </n-space>
+                  </n-gi>
+                  <n-gi span="2 l:1">
+                    <n-space vertical :size="6">
+                      <Actions />
+                      <SpellChoice />
+                      <Card>
+                        <template #content>
+                          <SpellFactors />
+                        </template>
+                        <template #footer>
+                          <SpellYantras />
+                        </template>
+                      </Card>
+                    </n-space>
+                  </n-gi>
+                </n-grid>
               </n-gi>
             </n-grid>
           </div>
@@ -108,25 +126,6 @@
               </n-space>
             </n-drawer-content>
           </n-drawer>
-          <n-drawer v-model:show="showCast" :width="500" placement="right">
-            <n-drawer-content>
-              <template #header>
-                <Actions />
-              </template>
-              <n-space vertical :size="6">
-                <SpellChoice />
-                <Card>
-                  <template #content>
-                    <SpellFactors />
-                  </template>
-                  <template #footer>
-                    <SpellYantras />
-                  </template>
-                </Card>
-                <!-- <SpellParadox /> -->
-              </n-space>
-            </n-drawer-content>
-          </n-drawer>
         </n-config-provider>
       </n-dialog-provider>
     </n-modal-provider>
@@ -135,29 +134,26 @@
 
 <script setup lang="ts">
 import { assign, cloneDeep } from "lodash";
-import { BookMarked, IdCardLanyard, WandSparkles } from "lucide-vue-next";
 import type { GlobalThemeOverrides } from "naive-ui";
 import { onBeforeMount, onMounted, ref, toRaw, watch } from "vue";
+import Card from "./modules/common/Card.vue";
 import Actions from "./modules/sections/Actions.vue";
 import Active from "./modules/sections/Active.vue";
 import Arcana from "./modules/sections/Arcana.vue";
+import Attainments from "./modules/sections/Attainments.vue";
 import Attributes from "./modules/sections/Attributes.vue";
 import Merits from "./modules/sections/Merits.vue";
+import Nimbus from "./modules/sections/Nimbus.vue";
+import Person from "./modules/sections/Person.vue";
+import Skills from "./modules/sections/Skills.vue";
 import SpellChoice from "./modules/sections/SpellChoice.vue";
 import SpellFactors from "./modules/sections/SpellFactors.vue";
 import SpellList from "./modules/sections/SpellList.vue";
+import Spells from "./modules/sections/Spells.vue";
 import SpellYantras from "./modules/sections/SpellYantras.vue";
 import Status from "./modules/sections/Status.vue";
-import Attainments from "./modules/sections/Attainments.vue";
-import { caster } from "./store/caster";
-import { casting } from "./store/casting";
-import Card from "./modules/common/Card.vue";
-import Skills from "./modules/sections/Skills.vue";
-import Person from "./modules/sections/Person.vue";
-import Nimbus from "./modules/sections/Nimbus.vue";
-import Spells from "./modules/sections/Spells.vue";
 import Tools from "./modules/sections/Tools.vue";
-import SpellAttainments from "./modules/sections/SpellAttainments.vue";
+import { caster } from "./store/caster";
 
 const overrides: GlobalThemeOverrides = {
   common: {
@@ -172,14 +168,9 @@ const overrides: GlobalThemeOverrides = {
   }
 };
 
-const showCast = ref(false)
 const showList = ref(false);
 
 const showListFilter = ref("");
-
-watch(casting, () => {
-  if (casting.spells.length > 0 || casting.form !== undefined) showCast.value = true
-})
 
 onBeforeMount(() => {
   const hasCharacter = JSON.parse(localStorage.getItem("mtaw") ?? "null");
@@ -236,10 +227,10 @@ body {
 
 
 .sheet {
-  max-width: 1200px;
+  max-width: 1400px;
   min-width: 400px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 12px;
 }
 
 .name-input {
