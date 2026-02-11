@@ -107,6 +107,19 @@
         </template>
       </Card>
     </n-space>
+    <Card>
+      <template #content>
+        <n-space :wrap="false">
+          <n-switch v-model:value="casting.willpower" size="small" :disabled="caster.traits.Willpower === 0" />
+          <n-space vertical size="small" style="line-height: 20px">
+            <n-text>
+            <n-text strong>Spend Willpower</n-text>
+            <n-text> (+3 dice)</n-text>
+            </n-text>
+          </n-space>
+        </n-space>
+      </template>
+    </Card>
   </n-space>
 </template>
 
@@ -117,7 +130,6 @@ import { durations, scales } from "../../config/values";
 import { dots, getBaseCastingTime, getCastingTimeTurns } from "../../functions/methods";
 import { caster } from "../../store/caster";
 import { casting } from "../../store/casting";
-import { scene } from "../../store/scene";
 import Card from "../common/Card.vue";
 
 const baseCastingTime = computed(() => getBaseCastingTime(caster));

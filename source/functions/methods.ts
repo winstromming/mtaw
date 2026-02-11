@@ -2,12 +2,12 @@ import { clone, filter, range, some, upperFirst } from "lodash";
 import { spells } from "../config/spells";
 import type { Skill, Source, Yantra } from "../config/types";
 import {
-    baseCastingTimes,
-    durations,
-    orders,
-    purviews,
-    scales,
-    yantrasBaseData,
+  baseCastingTimes,
+  durations,
+  orders,
+  purviews,
+  scales,
+  yantrasBaseData,
 } from "../config/values";
 import type { Caster } from "../store/caster";
 import type { Casting } from "../store/casting";
@@ -162,7 +162,7 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
 };
 
 export const getCastingReachLimit = (caster: Caster, casting: Casting) => {
-  if (casting.spells.length === 0) return 0
+  if (casting.spells.length === 0) return 0;
   if (
     casting.spells[0] &&
     (casting.form === "Rote" || casting.form === "Grimoire")
@@ -287,6 +287,8 @@ export const getCastingDicePool = (caster: Caster, casting: Casting) => {
   bonuses = bonuses - penalties;
   if (bonuses > 5) bonuses = 5;
   pool += bonuses;
+  // spending willpower
+  if (casting.willpower) pool += 3;
   return pool;
 };
 
@@ -530,7 +532,7 @@ export const getCastingEffectsSummary = (caster: Caster, casting: Casting) => {
   );
   // if (spell.extraMana) summary.push(`${spell.extraMana} Mana.`)
   // if (spell.extraReach) summary.push(`+${spell.extraReach} Reach.`)
-  // if (spell.spendWillpower) summary.unshift("Willpower spent.")
+  if (casting.willpower) summary.push("Willpower spent.");
   for (const sp of casting.spells) {
     if (sp.page !== "Creative") {
       const src = spells.find((n) => n.name === sp.name);

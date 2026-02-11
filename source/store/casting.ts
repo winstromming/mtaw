@@ -5,7 +5,7 @@ import type {
   Scale,
   Skill,
   Source,
-  Yantra
+  Yantra,
 } from "../config/types";
 
 export type Casting = typeof casting;
@@ -25,6 +25,7 @@ export const casting = reactive({
   } as Record<Factor, string>,
   scaling: undefined as Scale | undefined,
   yantras: [] as Yantra[],
+  willpower: false,
   attainments: {
     conditionalDuration: false,
     everywhere: false,
@@ -47,6 +48,7 @@ export const casting = reactive({
       scale: "s1-subjects",
     };
     this.yantras = [];
+    this.willpower = false;
     this.attainments = {
       conditionalDuration: false,
       everywhere: false,
@@ -59,6 +61,6 @@ export const casting = reactive({
   insert(item?: Source, form?: Form) {
     if (item) this.spells.push({ ...item, effects: [] });
     if (form) this.form = form;
-    if (form === "Rote") this.skill = item?.skill
+    if (form === "Rote") this.skill = item?.skill;
   },
 });
