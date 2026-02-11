@@ -4,13 +4,6 @@
       <n-space vertical :size="16">
         <n-flex align="center" justify="space-between" :size="6">
           <HealthBar />
-          <n-button secondary strong size="tiny" type="success" @click="cast" title="Cast">
-            <template #icon>
-              <n-icon>
-                <WandSparkles />
-              </n-icon>
-            </template>
-          </n-button>
         </n-flex>
         <n-space vertical :size="6">
           <n-grid cols="2" y-gap="6" x-gap="6">

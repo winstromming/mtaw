@@ -2,12 +2,12 @@ import { clone, filter, range, some, upperFirst } from "lodash";
 import { spells } from "../config/spells";
 import type { Skill, Source, Yantra } from "../config/types";
 import {
-  baseCastingTimes,
-  durations,
-  orders,
-  purviews,
-  scales,
-  yantrasBaseData,
+    baseCastingTimes,
+    durations,
+    orders,
+    purviews,
+    scales,
+    yantrasBaseData,
 } from "../config/values";
 import type { Caster } from "../store/caster";
 import type { Casting } from "../store/casting";
@@ -167,6 +167,7 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
 };
 
 export const getCastingReachLimit = (caster: Caster, casting: Casting) => {
+  if (casting.spells.length === 0) return 0
   if (
     casting.spells[0] &&
     (casting.form === "Rote" || casting.form === "Grimoire")
@@ -261,8 +262,8 @@ export const getCastingTimePenalty = (_caster: Caster, casting: Casting) => {
 };
 
 export const getCastingDicePool = (caster: Caster, casting: Casting) => {
+  console.log("b", casting.spells.length)
   if (casting.spells.length === 0) return 0;
-
   // Base pool of gnosis plus lowest arcana of any spell being cast
   let pool =
     caster.traits.Gnosis +

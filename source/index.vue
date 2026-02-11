@@ -5,7 +5,7 @@
         <n-config-provider :theme-overrides="overrides">
           <div class="sheet">
             <n-grid y-gap="6" x-gap="6" cols="12" item-responsive responsive="screen">
-              <n-gi span="12 s:6 m:8 l:6">
+              <n-gi span="12 s:6 m:8 l:8">
                 <n-space vertical :size="6">
                   <Person />
                   <Card>
@@ -86,20 +86,31 @@
                   </n-grid>
                 </n-space>
               </n-gi>
-              <!-- Middle -->
-              <n-gi span="12 s:6 m:4 l:6">
+              <!-- Right -->
+              <n-gi span="12 s:6 m:4 l:4">
                 <n-grid y-gap="6" x-gap="6" cols="2" item-responsive responsive="screen">
-                  <n-gi span="2 l:1">
+                  <n-gi span="2 l:2">
                     <n-space vertical :size="6">
                       <Status />
                       <Active />
                     </n-space>
                   </n-gi>
-                  <n-gi span="2 l:1">
+                  <n-gi span="2 l:2">
                     <n-space vertical :size="6">
-                      <Actions />
-                      <SpellChoice />
                       <Card>
+                        <template #content>
+                          <Actions />
+                        </template>
+                        <template #footer>
+                      <SpellChoice v-if="casting.spells.length > 0" />
+                        </template>
+                      </Card>
+                      <Card v-if="casting.spells.length > 0">
+                        <template #content>
+                          <SpellParadox />
+                        </template>
+                      </Card>
+                      <Card v-if="casting.spells.length > 0">
                         <template #content>
                           <SpellFactors />
                         </template>
@@ -149,11 +160,13 @@ import Skills from "./modules/sections/Skills.vue";
 import SpellChoice from "./modules/sections/SpellChoice.vue";
 import SpellFactors from "./modules/sections/SpellFactors.vue";
 import SpellList from "./modules/sections/SpellList.vue";
+import SpellParadox from "./modules/sections/SpellParadox.vue";
 import Spells from "./modules/sections/Spells.vue";
 import SpellYantras from "./modules/sections/SpellYantras.vue";
 import Status from "./modules/sections/Status.vue";
 import Tools from "./modules/sections/Tools.vue";
 import { caster } from "./store/caster";
+import { casting } from "./store/casting";
 
 const overrides: GlobalThemeOverrides = {
   common: {

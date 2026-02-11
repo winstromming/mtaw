@@ -63,7 +63,7 @@
             :options="[{ label: `Potency${source?.factor === 'Potency' ? '' : ' (Reach)'}`, value: 'Potency' }, { label: `Duration${source?.factor === 'Duration' ? '' : ' (Reach)'}`, value: 'Duration' }]"
           />
           <n-text>•</n-text>
-          <n-text>{{ spell.page }}</n-text>
+          <n-text>{{ spell.page?.replace("the Awakening", "").replace("of Sorcery", "") }}</n-text>
         </n-flex>
       </n-space>
     </template>

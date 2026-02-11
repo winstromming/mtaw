@@ -1,10 +1,12 @@
 <template>
-  <Spell v-for="(item, index) in casting.spells" :spell="item" effects @remove="casting.spells.splice(index, 1)" />
-  <Card v-if="casting.spells.length === 0">
+  <n-space vertical :size="6">
+    <Spell v-for="(item, index) in casting.spells" :spell="item" effects @remove="casting.spells.splice(index, 1)" />
+  </n-space>
+  <!-- <Card v-if="casting.spells.length === 0">
     <template #content>
       <n-select filterable class="choose-text" placement="bottom-end" :value="null" placeholder="Choose improvised spell to cast" @update:value="choose" :options="chooseSpellOptions" />
     </template>
-  </Card>
+  </Card> -->
 </template>
 
 <script setup lang="ts">
@@ -14,7 +16,6 @@ import { combinedLimit, practices, purviews } from "../../config/values";
 import { dots, ensureTrailingPeriod } from "../../functions/methods";
 import { caster } from "../../store/caster";
 import { casting } from "../../store/casting";
-import Card from "../common/Card.vue";
 import Spell from "../common/Spell.vue";
 
 watch(casting.spells, () => {

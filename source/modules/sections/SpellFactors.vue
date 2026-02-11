@@ -3,19 +3,6 @@
     <n-space vertical :size="6">
       <n-input-group>
         <n-input-group-label style="width: 5.8em">
-          <n-text strong>Paradox</n-text>
-        </n-input-group-label>
-      <n-input-number v-model:value="scene.paradox" placeholder="0">
-        <template #suffix>
-          <n-text style="opacity: 0.5">(from scene)</n-text>
-        </template>
-      </n-input-number>
-      </n-input-group>
-        <!-- <n-select v-model:value="casting.factors.potency" :options="potencyOptions" /> -->
-    </n-space>
-    <n-space vertical :size="6">
-      <n-input-group>
-        <n-input-group-label style="width: 5.8em">
           <n-text strong>Potency</n-text>
         </n-input-group-label>
         <n-select v-model:value="casting.factors.potency" :options="potencyOptions" />
@@ -120,16 +107,6 @@
         </template>
       </Card>
     </n-space>
-    <n-input-group>
-      <n-input-group-label style="width: 5.8em">
-        <n-text strong>Mana</n-text>
-      </n-input-group-label>
-      <n-input-number style="width: 100%" v-model:value="scene.negation">
-        <template #suffix>
-        <n-text style="opacity: 0.5">(extra spent)</n-text>
-        </template>
-  </n-input-number>
-    </n-input-group>
   </n-space>
 </template>
 

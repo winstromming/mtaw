@@ -1,18 +1,21 @@
 <template>
   <n-space :size="10" justify="space-between">
-    <n-space :size="2" v-if="canCastSpell">
-      <n-tag size="small" :bordered="false" round strong :type="usedReach > freeReach ? 'warning' : 'success'"> {{usedReach}}/{{ freeReach }} Reach</n-tag>
-      <n-tag size="small" :bordered="false" round strong :type="isDicePoolTooLow ? 'warning' : 'success'"> {{ dicePool }} Dice</n-tag>
-      <n-tag size="small" :bordered="false" round strong type="success">{{ totalMana }} Mana</n-tag>
-      <n-tag v-if="hasParadox" size="small" :bordered="false" round strong type="error">{{ paradoxDice }} Paradox</n-tag>
-    </n-space>
-    <n-space :size="2" v-if="canCastSpell === false">
-      <n-tag size="small" disabled :bordered="false" round strong>0/0 Reach</n-tag>
-      <n-tag size="small" disabled :bordered="false" round strong>0 Dice</n-tag>
-      <n-tag size="small" disabled :bordered="false" round strong>0 Mana</n-tag>
+    <n-space :size="2">
+      <n-tag size="small" :disabled="canCastSpell === false" :bordered="false" round strong :type="canCastSpell === false ? undefined : usedReach > freeReach ? 'warning' : 'success'">
+        {{ usedReach }}/{{ freeReach }} Reach
+      </n-tag>
+      <n-tag size="small" :disabled="canCastSpell === false" :bordered="false" round strong :type="canCastSpell === false ? undefined : isDicePoolTooLow ? 'warning' : 'success'">
+        {{ dicePool }} Dice
+      </n-tag>
+      <n-tag size="small" :disabled="canCastSpell === false" :bordered="false" round strong :type="canCastSpell === false ? undefined : 'success'">
+        {{ totalMana }} Mana
+      </n-tag>
+      <n-tag v-if="hasParadox && canCastSpell" size="small" :bordered="false" round strong type="error">
+        {{ paradoxDice }} Paradox
+      </n-tag>
     </n-space>
     <n-space :size="2">
-      <n-button secondary size="tiny" title="Reset" type="error" @click="reset">
+      <n-button v-if="false" secondary size="tiny" title="Reset" type="error" @click="reset">
         <template #icon>
           <n-icon>
             <Undo2 />
@@ -51,7 +54,6 @@ import { cloneDeep } from "lodash";
 import { Copy, Plus, Undo2, Zap } from "lucide-vue-next";
 import { useMessage } from "naive-ui";
 import { computed } from "vue";
-import { spells } from "../../config/spells";
 import type { Arcana, Source } from "../../config/types";
 import { combinedLimit, practices, purviews } from "../../config/values";
 import {
@@ -124,6 +126,7 @@ const freeReach = computed(() => {
 });
 
 const dicePool = computed(() => {
+  console.log('a')
   return getCastingDicePool(caster, casting);
 });
 
@@ -199,7 +202,7 @@ const chooseSpellOptions = computed(() => {
           option.children.push({
             label: `${dots(practice.level)} ${practice.name}`,
             style: {
-              fontWeight: "600",
+              // fontWeight: "600",
             },
             disabled: false,
             value: {
@@ -211,6 +214,8 @@ const chooseSpellOptions = computed(() => {
               page: "Creative",
             },
           });
+          // COMMENT OUT IF SPELL LIST ISN'T AVAILABLE
+          /*
           option.children.push(
             ...[...spells, ...caster.spells]
               .filter(
@@ -227,6 +232,7 @@ const chooseSpellOptions = computed(() => {
                 };
               }),
           );
+          */
         }
       }
       options.push(option);
