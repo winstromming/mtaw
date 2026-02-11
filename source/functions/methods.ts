@@ -121,11 +121,6 @@ export const getCastingReachUsed = (caster: Caster, casting: Casting) => {
   }
   // check effects
   for (const spell of casting.spells) {
-    console.log(
-      "check reach effects",
-      spell.factor,
-      spells.find((s) => s.name === spell.name)?.factor,
-    );
     if (
       spell.page !== "Creative" &&
       spell.factor !== spells.find((s) => s.name === spell.name)?.factor
@@ -262,7 +257,6 @@ export const getCastingTimePenalty = (_caster: Caster, casting: Casting) => {
 };
 
 export const getCastingDicePool = (caster: Caster, casting: Casting) => {
-  console.log("b", casting.spells.length)
   if (casting.spells.length === 0) return 0;
   // Base pool of gnosis plus lowest arcana of any spell being cast
   let pool =

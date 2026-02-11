@@ -126,7 +126,6 @@ const freeReach = computed(() => {
 });
 
 const dicePool = computed(() => {
-  console.log('a')
   return getCastingDicePool(caster, casting);
 });
 
