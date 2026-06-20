@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Character Sheet for Mage the Awakening",
   "scripts": {
-    "build": "parcel build --dist-dir docs",
+    "build": "parcel build --no-cache --dist-dir docs",
     "watch": "parcel serve --dist-dir .parcel-server source/index.html",
     "check": "npx @biomejs/biome check"
   },
