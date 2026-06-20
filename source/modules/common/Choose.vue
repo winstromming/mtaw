@@ -80,12 +80,12 @@
 </template>
 
 <script setup lang="ts">
+import { PencilLine, Save, X } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import { spells } from "../../config/spells";
 import type { Arcana, Practice, Source } from "../../config/types";
 import { arcanaNames, practices, } from "../../config/values";
 import { caster } from "../../store/caster";
-import { PencilLine, Save, X } from "lucide-vue-next";
 
 const newCustom = ref(false);
 const creating = ref<Source>();
@@ -109,12 +109,16 @@ function create() {
     factor: undefined as unknown as Source["factor"],
     description: "",
     effects: [],
-    page: `Custom ${Date.now()}`,
+    page: `Custom`,
   };
 }
 
 function save() {
-  if (creating.value) caster.spells.push(creating.value);
+  if (creating.value) {
+    if (props.custom === "grimoires") caster.grimoires.push(creating.value);
+    if (props.custom === "praxes") caster.praxes.push(creating.value);
+    if (props.custom === "rotes") caster.rotes.push(creating.value);
+  }
   reset();
 }
 
@@ -138,7 +142,7 @@ function reset() {
   is_creating.value = false
 }
 
-const props = defineProps<{ label?: string; custom?: boolean; creative?: boolean; text?: boolean }>();
+const props = defineProps<{ label?: string; custom?: "rotes" | "praxes" | "grimoires"; creative?: boolean; text?: boolean }>();
 const emit = defineEmits<(e: "choose", option: Source) => void>();
 
 const sources = computed(() => [...spells, ...caster.spells]);

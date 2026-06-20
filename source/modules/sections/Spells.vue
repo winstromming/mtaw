@@ -29,7 +29,7 @@
           </template>
         </n-button>
       </n-flex>
-      <Choose text label="Choose praxis to add" @choose="(o) => caster.praxes.push(o)" />
+      <Choose custom="praxes" text label="Choose praxis to add" @choose="(o) => caster.praxes.push(o)" />
     </n-space>
     <!-- Rotes -->
     <n-space vertical :size="6">
@@ -63,7 +63,7 @@
           </n-button>
         </n-flex>
       </n-flex>
-      <Choose text label="Choose rote to add" @choose="(o) => caster.rotes.push(o)" />
+      <Choose custom="rotes" text label="Choose rote to add" @choose="(o) => caster.rotes.push(o)" />
     </n-space>
     <!-- Grimoires -->
     <n-space vertical :size="6">
@@ -94,19 +94,19 @@
           </template>
         </n-button>
       </n-flex>
-      <Choose text label="Choose grimoire to add" @choose="(o) => caster.grimoires.push(o)" />
+      <Choose custom="grimoires" text label="Choose grimoire to add" @choose="(o) => caster.grimoires.push(o)" />
     </n-space>
   </n-space>
 </template>
 
 <script lang="ts" setup>
 import { Trash, WandSparkles } from 'lucide-vue-next';
-import { caster } from '../../store/caster';
-import Choose from '../common/Choose.vue';
-import { dots, ensureTrailingPeriod } from '../../functions/methods';
-import { casting } from '../../store/casting';
 import { computed } from 'vue';
 import type { Skill } from '../../config/types';
+import { dots, ensureTrailingPeriod } from '../../functions/methods';
+import { caster } from '../../store/caster';
+import { casting } from '../../store/casting';
+import Choose from '../common/Choose.vue';
 
 const skills = computed(() => {
   const options = [];
