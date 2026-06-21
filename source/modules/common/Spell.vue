@@ -18,14 +18,12 @@
           <n-input class="choose-text" type="textarea" :autosize="{ minRows: 1 }" placeholder="What does this spell do?" v-model:value="spell.description" />
           <n-text v-if="spell.withstand"> Withstand is {{ ensureTrailingPeriod(spell.withstand) }}</n-text>
         </n-text>
-        <n-flex style="opacity: 0.6; font-size: 12px" :size="3" justify="flex-start" align="center" :wrap="false">
+        <n-flex style="opacity: 0.6; font-size: 14px" :size="3" justify="flex-start" align="center" :wrap="false">
           <n-text :wrap="false">{{ casting.form ?? "Improvised" }}</n-text>
           <n-text>•</n-text>
           <n-text>{{ spell.practice }}</n-text>
           <n-text>•</n-text>
-          <n-select size="tiny" class="choose-text" :color="true" style="--font-size: 10px; width: auto" :consistent-menu-width="false" placeholder="Factor" v-model:value="spell.factor" :options="[{ label: `Potency`, value: 'Potency' }, { label: `Duration`, value: 'Duration' }]" />
-          <n-text>•</n-text>
-          <n-text>{{ spell.page }}</n-text>
+          <n-select size="small" class="choose-text" :color="true" style="--font-size: 14px; width: auto" :consistent-menu-width="false" placeholder="Factor" v-model:value="spell.factor" :options="[{ label: `Potency`, value: 'Potency' }, { label: `Duration`, value: 'Duration' }]" />
         </n-flex>
       </n-space>
     </template>
@@ -47,23 +45,21 @@
           <n-text>{{ ensureTrailingPeriod(spell.description) }}</n-text>
           <n-text v-if="spell.withstand"> Withstand is {{ ensureTrailingPeriod(spell.withstand) }}</n-text>
         </n-text>
-        <n-flex style="opacity: 0.6; font-size: 12px" :size="3" justify="flex-start" align="center" :wrap="false">
+        <n-flex style="opacity: 0.6; font-size: 14px" :size="3" justify="flex-start" align="center" :wrap="false">
           <n-text :wrap="false">{{ casting.form ?? "Improvised" }}</n-text>
           <n-text>•</n-text>
           <n-text>{{ spell.practice }}</n-text>
           <n-text>•</n-text>
           <n-select
-            size="tiny"
+            size="small"
             class="choose-text"
             :color="true"
-            style="--font-size: 10px; width: auto"
+            style="--font-size: 14px; width: auto"
             :consistent-menu-width="false"
             placeholder="Factor"
             v-model:value="spell.factor"
             :options="[{ label: `Potency${source?.factor === 'Potency' ? '' : ' (Reach)'}`, value: 'Potency' }, { label: `Duration${source?.factor === 'Duration' ? '' : ' (Reach)'}`, value: 'Duration' }]"
           />
-          <n-text>•</n-text>
-          <n-text>{{ spell.page?.replace("the Awakening", "").replace("of Sorcery", "") }}</n-text>
         </n-flex>
       </n-space>
     </template>
